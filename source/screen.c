@@ -101,7 +101,6 @@ putchar (int c)
   if (xpos >= COLUMNS)
     goto newline;
 }
-
 /*  Format a string and print it on the screen, just like the libc
   function printf. */
 void

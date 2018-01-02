@@ -34,6 +34,8 @@ _/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/
 
 #define load_idt() ({__asm__ __volatile__("lidt idtr");})
 
+extern void timer_interrupt(void);
+
 typedef struct{
   unsigned short offsetLow, selector;
   unsigned char reserved, accsessRight;
@@ -75,7 +77,9 @@ void init_idt(void)
 
   setupInterruptGate(64, &int_handler_test);
   setupInterruptGate(0, &int0_handler);
+  setupInterruptGate(32, &timer_interrupt);
 }
+
 extern void printf (const char *format, ...);
 int int_handler_test(){
   printf("[*]INT40!!\nThis is just a test interrupt!!\n");

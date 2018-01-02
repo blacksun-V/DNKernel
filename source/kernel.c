@@ -6,15 +6,19 @@
 extern void printf (const char *format, ...);
 extern void cls (void);
 extern void io_hlt(void);
+extern void io_sti(void);
+extern void io_cli(void);
 extern void init_idt(void);
 extern void init_gdt(void);
 extern void init_pic(void);
-
+extern void init_pit(void);
+extern int timercount;
 void kernel_entry (){
   unsigned long addr = multiboot2_info;
   struct multiboot_tag *tag;
   unsigned size;
   cls ();
+  io_cli();
   printf("Hello! baby barebone for multiboot2\n");
   printf("magic:%x\n", multiboot2_magic);
 
@@ -24,6 +28,7 @@ void kernel_entry (){
 
   printf("init gdt...");
   init_gdt();
+
   printf("[OK]\n");
   __asm__ __volatile__("int $0x40");
   printf("[*]Back to kernel entry!\n");
@@ -31,8 +36,17 @@ void kernel_entry (){
   printf("init pic...");
   init_pic();
   printf("[OK]\n");
-  while(1)
+
+  printf("init pit...");
+  init_pit();
+  printf("[OK]\n");
+  io_sti();
+
+  while(1){
+    if(timercount%100 == 0)
+      printf("%d\n", timercount/100);
     io_hlt();
+  }
   size = *(unsigned *) addr;
 }
 

@@ -39,7 +39,41 @@ void init_pic(void)
 	io_outByte(PIC_SLAVE_ICW3, 0x02); /* PIC1はIRQ2にて接続 00(IRQ0) 01(IRQ1) 10(IRQ2)*/
 	io_outByte(PIC_SLAVE_ICW4, 0x01); /* ノンバッファモード */
 
-	io_outByte(PIC_MASTER_IMR,  0xfb  ); /* 11111011 PIC1以外は全て禁止 */
+	io_outByte(PIC_MASTER_IMR,  0xf8  ); /* 11111000 PIC1 PIT Keyboard */
 	io_outByte(PIC_SLAVE_IMR,  0xff  ); /* 11111111 全ての割り込みを受け付けない */
 	return;
+}
+
+__inline__ void enter_interrupt(void)
+{
+  __asm__ __volatile__("pushal");
+}
+
+__inline__ void IRQinterrupt_done(void)
+{
+  io_outByte(PIC_MASTER_ICW1, 0x20);
+  io_outByte(PIC_SLAVE_ICW1, 0x20);
+}
+__inline__ void exit_interrupt(void)
+{
+  __asm__ __volatile__("popal");
+  __asm__ __volatile__("iret");
+}
+
+#define PIT_CTRL    0x0043
+#define PIT_CNT0    0x0040
+int timercount=0;
+void init_pit(void){
+  io_outByte(PIT_CTRL, 0x34);
+  io_outByte(PIT_CNT0, 0x9c);
+  io_outByte(PIT_CNT0, 0x2e);
+}
+
+extern void printf (const char *format, ...);
+void timer_interrupt(void)
+{
+  enter_interrupt();
+  timercount++;
+  IRQinterrupt_done();
+  exit_interrupt();
 }
