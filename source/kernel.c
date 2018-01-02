@@ -6,6 +6,8 @@
 extern void printf (const char *format, ...);
 extern void cls (void);
 extern void io_hlt(void);
+extern void init_idt(void);
+extern void init_gdt(void);
 
 void kernel_entry (){
   unsigned long addr = multiboot2_info;
@@ -14,6 +16,15 @@ void kernel_entry (){
   cls ();
   printf("Hello! baby barebone for multiboot2\n");
   printf("magic:%x\n", multiboot2_magic);
+
+  printf("init idt...");
+  init_idt();
+  printf("[OK]\n");
+
+  printf("init gdt...");
+  init_gdt();
+  printf("[OK]\n");
+  __asm__ __volatile__("int $0x40");
   while(1)
     io_hlt();
   size = *(unsigned *) addr;
