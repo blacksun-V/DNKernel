@@ -5,6 +5,7 @@
 
 extern void printf (const char *format, ...);
 extern void cls (void);
+extern void io_hlt(void);
 
 void kernel_entry (){
   unsigned long addr = multiboot2_info;
@@ -13,7 +14,8 @@ void kernel_entry (){
   cls ();
   printf("Hello! baby barebone for multiboot2\n");
   printf("magic:%x\n", multiboot2_magic);
-  while(1){}
+  while(1)
+    io_hlt();
   size = *(unsigned *) addr;
 }
 
