@@ -81,7 +81,7 @@ kernel_entry ()
   cls ();
   printf("Hello! baby barebone for multiboot2\n");
   printf("magic:%x\n", multiboot2_magic);
-  return;
+  while(1){}
   size = *(unsigned *) addr;
   /*
   for (tag = (struct multiboot_tag *) (addr + 8);

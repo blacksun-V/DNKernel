@@ -44,7 +44,6 @@ multiboot_entry:
   movl %ebx, (multiboot2_info)
   movl %eax, (multiboot2_magic)
   call kernel_entry
-  hlt
 .comm   stack, STACK_SIZE
 
 .balign 8
