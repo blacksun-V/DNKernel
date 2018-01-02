@@ -1,7 +1,7 @@
 SOURCE = ./source
 INCLUDES = -I$(SOURCE)/include
 DIR = /usr/local/i686elfgcc/bin/
-OBJS = $(SOURCE)/kernel.o $(SOURCE)/framebuffer.o $(SOURCE)/screen.o $(SOURCE)/boot.o $(SOURCE)/asmfunc.o $(SOURCE)/idt.o $(SOURCE)/gdt.o
+OBJS = $(SOURCE)/kernel.o $(SOURCE)/framebuffer.o $(SOURCE)/screen.o $(SOURCE)/boot.o $(SOURCE)/asmfunc.o $(SOURCE)/idt.o $(SOURCE)/gdt.o $(SOURCE)/pic.o
 CC = /usr/local/i686elfgcc/bin/i686-elf-gcc
 CFLAGS = -c -std=gnu99 -ffreestanding -O2 -Wall -Wextra $(INCLUDES)
 ASMFLAGS = -std=gnu99 -ffreestanding -O2 -Wall -Wextra -c $(INCLUDES)

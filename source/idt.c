@@ -48,6 +48,7 @@ typedef struct{
 IDTR idtr;
 
 int int_handler_test();
+int int0_handler();
 void setupGateDiscriptor(int iIDT, int offset,
   unsigned short selector, unsigned char ar)
 {
@@ -73,8 +74,13 @@ void init_idt(void)
   load_idt();
 
   setupInterruptGate(64, &int_handler_test);
+  setupInterruptGate(0, &int0_handler);
 }
 extern void printf (const char *format, ...);
 int int_handler_test(){
   printf("[*]INT40!!\nThis is just a test interrupt!!\n");
+  return 0;
+}
+int int0_handler(){
+  //not working
 }

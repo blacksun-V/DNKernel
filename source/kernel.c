@@ -8,6 +8,7 @@ extern void cls (void);
 extern void io_hlt(void);
 extern void init_idt(void);
 extern void init_gdt(void);
+extern void init_pic(void);
 
 void kernel_entry (){
   unsigned long addr = multiboot2_info;
@@ -25,6 +26,11 @@ void kernel_entry (){
   init_gdt();
   printf("[OK]\n");
   __asm__ __volatile__("int $0x40");
+  printf("[*]Back to kernel entry!\n");
+
+  printf("init pic...");
+  init_pic();
+  printf("[OK]\n");
   while(1)
     io_hlt();
   size = *(unsigned *) addr;
