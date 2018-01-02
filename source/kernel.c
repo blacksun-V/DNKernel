@@ -19,7 +19,7 @@ void kernel_entry (){
   unsigned size;
   cls ();
   io_cli();
-  printf("Hello! baby barebone for multiboot2\n");
+  printf("\nHello! baby barebone for multiboot2\n");
   printf("magic:%x\n", multiboot2_magic);
 
   printf("init idt...");
@@ -43,8 +43,11 @@ void kernel_entry (){
   io_sti();
 
   while(1){
-    if(timercount%100 == 0)
-      printf("%d\n", timercount/100);
+    if(timercount%100 == 0){
+      //dirty..
+      cls2();
+      printf("TIMER: %d\n", timercount/100);
+    }
     io_hlt();
   }
   size = *(unsigned *) addr;
