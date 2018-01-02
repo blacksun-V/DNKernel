@@ -3,12 +3,13 @@
 #define STACK_SIZE 0x4000
 #define HEADER_SIZE multiboot_header_end - multiboot_header
 	.text
-	.align 8
+	.balign 8
 	.extern kernel_entry
 	.global start, _start
   .global multiboot2_info
   .global multiboot2_magic
 
+.balign 8
 multiboot_header:
   .long MULTIBOOT2_HEADER_MAGIC
   .long MULTIBOOT_ARCHITECTURE_I386
@@ -25,11 +26,14 @@ framebuffer_tag_start:
   .long 32
 
 .balign 8
-framebuffer_tag_end:*/
+framebuffer_tag_end:
+*/
+.balign 8
   .short MULTIBOOT_HEADER_TAG_END
   .short 0
   .long 8
 
+.balign 8
 multiboot_header_end:
 
 .balign 8
@@ -48,8 +52,7 @@ start:
 
 .balign 8
 _start:
-				jmp multiboot_entry
-				.align 8
+  jmp multiboot_entry
 
 .balign 8
 .data
