@@ -7,7 +7,7 @@ CFLAGS = -c -std=gnu99 -ffreestanding -O2 -Wall -Wextra $(INCLUDES)
 ASMFLAGS = -std=gnu99 -ffreestanding -O2 -Wall -Wextra -c $(INCLUDES)
 LFLAGS = -T linker.ld -ffreestanding -O2 -nostdlib -lgcc -o myos.elf
 
-RM = rm
+RM = rm -f
 CP = cp
 RESCUE = grub-mkrescue
 default	:
