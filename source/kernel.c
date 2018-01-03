@@ -15,9 +15,6 @@ extern void init_pit(void);
 extern int timercount;
 extern unsigned char keydata;
 void kernel_entry (){
-  unsigned long addr = multiboot2_info;
-  struct multiboot_tag *tag;
-  unsigned size;
   cls ();
   io_cli();
   printf("\nHello! baby barebone for multiboot2\n");
@@ -32,12 +29,11 @@ void kernel_entry (){
 
   printf("[OK]\n");
   __asm__ __volatile__("int $0x40");
-  printf("[*]Back to kernel entry!\n");
 
   printf("init pic...");
   init_pic();
   printf("[OK]\n");
-
+  analyze_multiboot_tag();
   printf("init pit...");
   init_pit();
   printf("[OK]\n");
@@ -55,16 +51,51 @@ void kernel_entry (){
     }
     io_hlt();
   }
-  size = *(unsigned *) addr;
 }
 
-  /*
+void analyze_multiboot_tag(void)
+{
+  unsigned long addr = multiboot2_info;
+  struct multiboot_tag *tag;
+  unsigned size;
+  size = *(unsigned *) addr;
   for (tag = (struct multiboot_tag *) (addr + 8);
       tag->type != MULTIBOOT_TAG_TYPE_END;
-      tag = (struct multiboot_tag *) ((multiboot_uint8_t *) tag
-                                      + ((tag->size + 7) & ~7))){
+      tag = (struct multiboot_tag *) ((multiboot_uint8_t *) tag + ((tag->size + 7) & ~7))){
+      //printf ("Tag 0x%x, Size 0x%x\n", tag->type, tag->size);
       switch (tag->type)
+      {
+        case MULTIBOOT_TAG_TYPE_MODULE:
+          printf ("Module at 0x%x-0x%x. Command line %s\n",
+                  ((struct multiboot_tag_module *) tag)->mod_start,
+                  ((struct multiboot_tag_module *) tag)->mod_end,
+                  ((struct multiboot_tag_module *) tag)->cmdline);
+          break;
+        case MULTIBOOT_TAG_TYPE_BASIC_MEMINFO:
+          printf ("mem_lower = %uKB, mem_upper = %uKB\n",
+                  ((struct multiboot_tag_basic_meminfo *) tag)->mem_lower,
+                  ((struct multiboot_tag_basic_meminfo *) tag)->mem_upper);
+          break;
+        case MULTIBOOT_TAG_TYPE_MMAP:
         {
+          multiboot_memory_map_t *mmap;
+          printf ("mmap\n");
+          for (mmap = ((struct multiboot_tag_mmap *) tag)->entries;
+                      (multiboot_uint8_t *) mmap
+                        < (multiboot_uint8_t *) tag + tag->size;
+                      mmap = (multiboot_memory_map_t *)
+                        ((unsigned long) mmap
+                         + ((struct multiboot_tag_mmap *) tag)->entry_size))
+            printf (" base_addr = 0x%x%x,"
+                           " length = 0x%x%x, type = 0x%x\n",
+                           (unsigned) (mmap->addr >> 32),
+                           (unsigned) (mmap->addr & 0xffffffff),
+                           (unsigned) (mmap->len >> 32),
+                           (unsigned) (mmap->len & 0xffffffff),
+                           (unsigned) mmap->type);
+        }
+          break;
+        /*
         case MULTIBOOT_TAG_TYPE_FRAMEBUFFER:
           {
             multiboot_uint32_t color;
@@ -122,9 +153,10 @@ void kernel_entry (){
               drawCross();
             }
           }
-
         }
-    }
+    }*/
+        }
+      }
   tag = (struct multiboot_tag *) ((multiboot_uint8_t *) tag
                                   + ((tag->size + 7) & ~7));
-  */
+}
