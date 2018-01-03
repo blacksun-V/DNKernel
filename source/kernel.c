@@ -13,6 +13,7 @@ extern void init_gdt(void);
 extern void init_pic(void);
 extern void init_pit(void);
 extern int timercount;
+extern unsigned char keydata;
 void kernel_entry (){
   unsigned long addr = multiboot2_info;
   struct multiboot_tag *tag;
@@ -44,9 +45,13 @@ void kernel_entry (){
 
   while(1){
     if(timercount%100 == 0){
-      //dirty..
-      cls2();
+      cls2(0, 1);
       printf("TIMER: %d\n", timercount/100);
+    }
+    if(keydata!=0x00){
+      cls2(1, 1);
+      printf("KEY: %x\n", keydata);
+      keydata = 0x00;
     }
     io_hlt();
   }

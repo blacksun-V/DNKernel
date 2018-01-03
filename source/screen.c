@@ -24,28 +24,22 @@ void
 cls (void)
 {
   int i;
-
   video = (unsigned char *) VIDEO;
-
   for (i = 0; i < COLUMNS * LINES * 2; i++)
     *(video + i) = 0;
-
   xpos = 0;
-  ypos = 0;
+  ypos = 1;
 }
 
 void
-cls2 (void)
+cls2 (int y1, int y2)
 {
   int i;
-
   video = (unsigned char *) VIDEO;
-
-  for (i = 13*COLUMNS+1; i < COLUMNS; i++)
+  for (i = y1*COLUMNS; i < COLUMNS*y2; i++)
     *(video + i) = 0;
-
   xpos = 0;
-  ypos = 0;
+  ypos = y1;
 }
 /*  Convert the integer D to a string and save the string in BUF. If
   BASE is equal to 'd', interpret that D is decimal, and if BASE is

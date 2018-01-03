@@ -63,6 +63,7 @@ __inline__ void exit_interrupt(void)
 #define PIT_CTRL    0x0043
 #define PIT_CNT0    0x0040
 int timercount=0;
+unsigned char keydata;
 void init_pit(void){
   io_outByte(PIT_CTRL, 0x34);
   io_outByte(PIT_CNT0, 0x9c);
@@ -81,5 +82,6 @@ void ps2keyboard_handler(void)
 {
   enter_interrupt();
   IRQinterrupt_done();
+  keydata = io_inByte(0x60);
   exit_interrupt();
 }
