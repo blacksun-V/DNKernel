@@ -69,10 +69,6 @@ void init_pit(void){
   io_outByte(PIT_CNT0, 0x2e);
 }
 
-extern void printf (const char *format, ...);
-extern BackToOldPos();
-extern ChangePos(int x, int y);
-
 void timer_interrupt(void)
 {
   enter_interrupt();
