@@ -47,7 +47,6 @@ cls2 (void)
   xpos = 0;
   ypos = 0;
 }
-
 /*  Convert the integer D to a string and save the string in BUF. If
   BASE is equal to 'd', interpret that D is decimal, and if BASE is
   equal to 'x', interpret that D is hexadecimal. */

@@ -35,6 +35,8 @@ _/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/
 #define load_idt() ({__asm__ __volatile__("lidt idtr");})
 
 extern void timer_interrupt(void);
+extern void ps2keyboard_handler(void);
+int int_handler_test();
 
 typedef struct{
   unsigned short offsetLow, selector;
@@ -49,8 +51,6 @@ typedef struct{
 } __attribute__((packed))IDTR;
 IDTR idtr;
 
-int int_handler_test();
-int int0_handler();
 void setupGateDiscriptor(int iIDT, int offset,
   unsigned short selector, unsigned char ar)
 {
@@ -75,16 +75,13 @@ void init_idt(void)
   idtr.base = (GATE_DESCRIPTOR*)idt;
   load_idt();
 
-  setupInterruptGate(64, &int_handler_test);
-  setupInterruptGate(0, &int0_handler);
-  setupInterruptGate(32, &timer_interrupt);
+  setupInterruptGate(0x40, &int_handler_test);
+  setupInterruptGate(0x20, &timer_interrupt);
+  setupInterruptGate(0x21, &ps2keyboard_handler);
 }
 
 extern void printf (const char *format, ...);
 int int_handler_test(){
   printf("[*]INT40!!\nThis is just a test interrupt!!\n");
   return 0;
-}
-int int0_handler(){
-  //not working
 }

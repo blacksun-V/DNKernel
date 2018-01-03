@@ -70,10 +70,20 @@ void init_pit(void){
 }
 
 extern void printf (const char *format, ...);
+extern BackToOldPos();
+extern ChangePos(int x, int y);
+
 void timer_interrupt(void)
 {
   enter_interrupt();
   timercount++;
+  IRQinterrupt_done();
+  exit_interrupt();
+}
+
+void ps2keyboard_handler(void)
+{
+  enter_interrupt();
   IRQinterrupt_done();
   exit_interrupt();
 }
