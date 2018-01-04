@@ -2,7 +2,6 @@
 #include <stdint.h>
 #include <multiboot2.h>
 #include "multiboot.h"
-
 extern void printf (const char *format, ...);
 extern void cls (void);
 extern void cls2 (int y1, int y2);
@@ -15,7 +14,10 @@ extern void init_pic(void);
 extern void init_pit(void);
 extern int timercount;
 extern unsigned char keydata;
+extern void initPhysicalMemoryManagement(unsigned int memory_size);
+extern void initFreedMemoryRegion(void *base_address, unsigned int size);
 void analyze_multiboot_tag(void);
+uint32_t memsize;
 void kernel_entry ()
 {
   uint32_t eip;
@@ -43,8 +45,13 @@ void kernel_entry ()
   printf("init pit...");
   init_pit();
   printf("[OK]\n");
+  printf("phy mem init...");
+  initPhysicalMemoryManagement(memsize);
+  printf(" size:%x", memsize);
+  //利用可能メモリを全部freeする！！
+  //initFreedMemoryRegion();
+  printf("[OK]\n");
   io_sti();
-
   while(1){
     if(timercount%100 == 0){
       cls2(0, 1);
@@ -78,9 +85,14 @@ void analyze_multiboot_tag(void)
                   ((struct multiboot_tag_module *) tag)->cmdline);
           break;
         case MULTIBOOT_TAG_TYPE_BASIC_MEMINFO:
+        {
           printf ("mem_lower = %uKB, mem_upper = %uKB\n",
                   ((struct multiboot_tag_basic_meminfo *) tag)->mem_lower,
                   ((struct multiboot_tag_basic_meminfo *) tag)->mem_upper);
+          memsize = (uint32_t)(((struct multiboot_tag_basic_meminfo *) tag)->mem_lower) +
+                    (uint32_t)(((struct multiboot_tag_basic_meminfo *) tag)->mem_upper);
+          memsize *= 1000;
+        }
           break;
         case MULTIBOOT_TAG_TYPE_MMAP:
         {
