@@ -28,7 +28,7 @@ cls (void)
   for (i = 0; i < COLUMNS * LINES * 2; i++)
     *(video + i) = 0;
   xpos = 0;
-  ypos = 1;
+  ypos = 0;
 }
 
 void

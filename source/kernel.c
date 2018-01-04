@@ -5,6 +5,7 @@
 
 extern void printf (const char *format, ...);
 extern void cls (void);
+extern void cls2 (int y1, int y2);
 extern void io_hlt(void);
 extern void io_sti(void);
 extern void io_cli(void);
@@ -14,10 +15,15 @@ extern void init_pic(void);
 extern void init_pit(void);
 extern int timercount;
 extern unsigned char keydata;
-void kernel_entry (){
+void analyze_multiboot_tag(void);
+void kernel_entry ()
+{
+  uint32_t eip;
+  __asm__ __volatile__("movl $kernel_entry, %0": "=b"(eip));
   cls ();
+  printf("\n\nNOW I'M AT 0x%x\n", eip);
   io_cli();
-  printf("\nHello! baby barebone for multiboot2\n");
+  printf("Hello! baby barebone for multiboot2\n");
   printf("magic:%x\n", multiboot2_magic);
 
   printf("init idt...");
