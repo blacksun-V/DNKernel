@@ -10,7 +10,7 @@
 #define ATTRIBUTE               7
 /*  The video memory address. */
 #define VIDEO                   0xB8000
-
+void cls2 (int y1, int y2);
 /*  Variables. */
 /*  Save the X position. */
 static int xpos;
@@ -18,7 +18,6 @@ static int xpos;
 static int ypos;
 /*  Point to the video memory. */
 static volatile unsigned char *video;
-
 /*  Clear the screen and initialize VIDEO, XPOS and YPOS. */
 void
 cls (void)
@@ -36,7 +35,7 @@ cls2 (int y1, int y2)
 {
   int i;
   video = (unsigned char *) VIDEO;
-  for (i = y1*COLUMNS; i < COLUMNS*y2; i++)
+  for (i = y1*COLUMNS*2; i < y2*COLUMNS*2; i++)
     *(video + i) = 0;
   xpos = 0;
   ypos = y1;
@@ -96,14 +95,18 @@ putchar (int c)
     newline:
       xpos = 0;
       ypos++;
-      if (ypos >= LINES)
-        ypos = 0;
       return;
     }
-
+  if (ypos >= LINES){
+    for(int i=0;i < LINES*COLUMNS*2; i++){
+      *(video + i) = *(video + i + COLUMNS*2);
+    }
+    cls2(0,2);
+    xpos = 0;
+    ypos = LINES-1;
+  }
   *(video + (xpos + ypos * COLUMNS) * 2) = c & 0xFF;
   *(video + (xpos + ypos * COLUMNS) * 2 + 1) = ATTRIBUTE;
-
   xpos++;
   if (xpos >= COLUMNS)
     goto newline;

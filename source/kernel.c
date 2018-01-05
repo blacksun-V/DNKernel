@@ -48,9 +48,13 @@ void kernel_entry ()
   printf("phy mem init...");
   initPhysicalMemoryManagement(memsize);
   printf(" size:%x", memsize);
-  //利用可能メモリを全部freeする！！
+  //利用可能メモリを全部freeする！！ type1のやつ
   //initFreedMemoryRegion();
   printf("[OK]\n");
+  for(int idx=0;idx<7;idx++){
+    printf("uoo %d\n", idx);
+  }
+  printf("mnya---!\n");
   io_sti();
   while(1){
     if(timercount%100 == 0){
@@ -58,7 +62,7 @@ void kernel_entry ()
       printf("TIMER: %d\n", timercount/100);
     }
     if(keydata!=0x00){
-      cls2(1, 1);
+      cls2(1, 2);
       printf("KEY: %x\n", keydata);
       keydata = 0x00;
     }
