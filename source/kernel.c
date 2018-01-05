@@ -21,6 +21,7 @@ extern unsigned int allocSingleMemoryBlock(void);
 extern void freeSingleMemoryBlock(void *physical_address);
 extern void printFreeBlocks();
 extern void printAllocatedBlocks();
+extern void printSystemBlocks();
 extern unsigned int testAddress(unsigned int address);
 void analyze_multiboot_tag(void);
 
@@ -79,6 +80,7 @@ void kernel_entry ()
   {
     initAllocatedMemoryRegion(m_modules[i].address, m_modules[i].size);
   }
+  printSystemBlocks();
   printFreeBlocks();
   printAllocatedBlocks();
   printf("[OK]\n");

@@ -2,7 +2,6 @@
 //ページングの仮想アドレスに割り当てる4kb=1pageをとったりするやつ
 
 #include <stdint.h>
-#include "phy_mem.h"
 #define	DEF_MEMORY_KERNEL_START	0x00100000
 #define DEF_MEMORY_BLOCK_SIZE 4096
 extern void printf (const char *format, ...);
@@ -25,6 +24,10 @@ typedef struct{
 } PHYSICAL_MEMORY_INFO;
 
 static PHYSICAL_MEMORY_INFO	pm_info;
+void printSystemBlocks()
+{
+  printf("total blocks:%d\n", pm_info.system_memory_blocks);
+}
 void printFreeBlocks()
 {
   printf("total freeblocks:%d\n", pm_info.free_blocks);
