@@ -2,8 +2,10 @@
 //ページングの仮想アドレスに割り当てる4kb=1pageをとったりするやつ
 
 #include <stdint.h>
+#include "phy_mem.h"
 #define	DEF_MEMORY_KERNEL_START	0x00100000
-#define DEF_MEMORY_BLOCK_SIZE 32768
+#define DEF_MEMORY_BLOCK_SIZE 4096
+extern void printf (const char *format, ...);
 
 inline unsigned int getSizeOfKernel(void)
 {
@@ -23,6 +25,14 @@ typedef struct{
 } PHYSICAL_MEMORY_INFO;
 
 static PHYSICAL_MEMORY_INFO	pm_info;
+void printFreeBlocks()
+{
+  printf("total freeblocks:%d\n", pm_info.free_blocks);
+}
+void printAllocatedBlocks()
+{
+  printf("total allocated blocks:%d\n", pm_info.allocated_blocks);
+}
 
 static inline unsigned int getSystemMemoryBlocks(void)
 {
@@ -50,7 +60,12 @@ static inline unsigned int testBit(int bit_num)
   test = pm_info.memory_map[bit_num/32] & (1<<(bit_num)%32);
   return test;
 }
-
+unsigned int testAddress(unsigned int address)
+{
+  unsigned int ret;
+  ret = testBit(address/DEF_MEMORY_BLOCK_SIZE);
+  return ret;
+}
 unsigned int findFirstFreeMemoryBlock(unsigned int *block_number)
 {
   unsigned int bitmap_index;
@@ -72,7 +87,7 @@ unsigned int findFirstFreeMemoryBlock(unsigned int *block_number)
           /* ---------------------------------------------------------------- */
           for(bit_count=0; bit_count<32; bit_count++)
           {
-              if(testBit(bit_count) == 0)
+              if(testBit(bitmap_index*32+bit_count) == 0)
               {
                   /* -------------------------------------------------------- */
                   /*  return bitmap index number                              */
@@ -94,7 +109,7 @@ void kmemset( void *str, unsigned char c, int size )
 		*ptr++ = ch;
 }
 
-static void initFreedMemoryRegion(void *base_address, unsigned int size)
+void initFreedMemoryRegion(unsigned int base_address, unsigned int size)
 {
   unsigned int block_number;
   int block_size;
@@ -102,36 +117,33 @@ static void initFreedMemoryRegion(void *base_address, unsigned int size)
 
   block_number = (unsigned int)base_address / DEF_MEMORY_BLOCK_SIZE;
   block_size = size / DEF_MEMORY_BLOCK_SIZE;
-
   /* ------------------------------------------------------------------------ */
   /*  all blocks of the memory region are freed                               */
   /* ------------------------------------------------------------------------ */
-  for(i=block_size; 0<=i; i--)
+  for(i=0; i<block_size; i++)
   {
     clearBit(block_number);
-    block_number--;
+    block_number++;
     pm_info.allocated_blocks--;
     pm_info.free_blocks++;
   }
 }
 
 //カーネルから使えないやつを使用済みにするやつ
-static void initAllocatedMemoryRegion(void *base_address, unsigned int size)
+void initAllocatedMemoryRegion(unsigned int base_address, unsigned int size)
 {
   unsigned int block_number;
   int block_size;
   int i;
-
   block_number = (unsigned int)base_address / DEF_MEMORY_BLOCK_SIZE;
   block_size = size / DEF_MEMORY_BLOCK_SIZE;
-
   /* ------------------------------------------------------------------------ */
   /*  all blocks of the memory region are freed                               */
   /* ------------------------------------------------------------------------ */
-  for(i=block_size; 0<=i; i--)
+  for(i=0;i<block_size;i++)
   {
     setBit(block_number);
-    block_number--;
+    block_number++;
     pm_info.allocated_blocks++;
     pm_info.free_blocks--;
   }
@@ -179,5 +191,5 @@ void initPhysicalMemoryManagement(unsigned int memory_size)
   pm_info.memory_map_size = getSystemMemoryBlocks() / 32;
 
   //すべてのブロックをallocatedにする
-  kmemset((void*)pm_info.memory_map, 0xFF, pm_info.memory_map_size);
+  kmemset((void*)pm_info.memory_map, 0xFF, pm_info.memory_map_size*8);
 }
