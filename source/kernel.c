@@ -2,7 +2,6 @@
 #include <stdint.h>
 #include <multiboot2.h>
 #include "multiboot.h"
-#include "phy_mem.h"
 extern void printf (const char *format, ...);
 extern void cls (void);
 extern void cls2 (int y1, int y2);
@@ -83,35 +82,6 @@ void kernel_entry ()
   printFreeBlocks();
   printAllocatedBlocks();
   printf("[OK]\n");
-  #define TESTS 10
-  uint32_t phy[TESTS];
-  printf("alloc100\n");
-  for(int test=0; test<TESTS; test++)
-  {
-    phy[test] = allocSingleMemoryBlock();
-    //if(phy != 0x0)
-      //printf("test block 0x%x\n", phy);
-  }
-  printAllocatedBlocks();
-  for(int test=0; test<TESTS; test++)
-  {
-    unsigned int res;
-    res = testAddress(phy[test]);
-    printf("0x%x %d\n", phy[test], res);
-  }
-  printf("free100\n");
-  for(int test=0; test<TESTS; test++)
-  {
-    freeSingleMemoryBlock(phy[test]);
-  }
-  for(int test=0; test<TESTS; test++)
-  {
-    unsigned int res;
-    res = testAddress(phy[test]);
-    printf("0x%x %d\n", phy[test], res);
-  }
-  printAllocatedBlocks();
-
   io_sti();
   while(1){
     if(timercount%100 == 0){
@@ -141,10 +111,11 @@ void analyze_multiboot_tag(void)
       {
         case MULTIBOOT_TAG_TYPE_MODULE:
         {
+          /*
           printf ("Module at 0x%x-0x%x. Command line %s\n",
                   ((struct multiboot_tag_module *) tag)->mod_start,
                   ((struct multiboot_tag_module *) tag)->mod_end,
-                  ((struct multiboot_tag_module *) tag)->cmdline);
+                  ((struct multiboot_tag_module *) tag)->cmdline);*/
           m_modules[mm_idx].address = ((struct multiboot_tag_module *) tag)->mod_start;
           m_modules[mm_idx].name = ((struct multiboot_tag_module *) tag)->cmdline;
           m_modules[mm_idx].size = ((struct multiboot_tag_module *) tag)->mod_end
@@ -154,9 +125,10 @@ void analyze_multiboot_tag(void)
         break;
         case MULTIBOOT_TAG_TYPE_BASIC_MEMINFO:
         {
+          /*
           printf ("mem_lower = %uKB, mem_upper = %uKB\n",
                   ((struct multiboot_tag_basic_meminfo *) tag)->mem_lower,
-                  ((struct multiboot_tag_basic_meminfo *) tag)->mem_upper);
+                  ((struct multiboot_tag_basic_meminfo *) tag)->mem_upper);*/
           memsize = (uint32_t)(((struct multiboot_tag_basic_meminfo *) tag)->mem_lower) +
                     (uint32_t)(((struct multiboot_tag_basic_meminfo *) tag)->mem_upper);
           memsize *= 1024;
@@ -165,20 +137,21 @@ void analyze_multiboot_tag(void)
         case MULTIBOOT_TAG_TYPE_MMAP:
         {
           multiboot_memory_map_t *mmap;
-          printf ("mmap\n");
+          //printf ("mmap\n");
           for (mmap = ((struct multiboot_tag_mmap *) tag)->entries;
                       (multiboot_uint8_t *) mmap
                         < (multiboot_uint8_t *) tag + tag->size;
                       mmap = (multiboot_memory_map_t *)
                         ((unsigned long) mmap
                          + ((struct multiboot_tag_mmap *) tag)->entry_size)){
+            /*
             printf (" base_addr = 0x%x%x,"
                            " length = 0x%x%x, type = 0x%x\n",
                            (unsigned) (mmap->addr >> 32),
                            (unsigned) (mmap->addr & 0xffffffff),
                            (unsigned) (mmap->len >> 32),
                            (unsigned) (mmap->len & 0xffffffff),
-                           (unsigned) mmap->type);
+                           (unsigned) mmap->type);*/
             if(mmap->type == MULTIBOOT_MEMORY_AVAILABLE){
               usable_areas[ua_idx].size = mmap->len & 0xffffffff;
               usable_areas[ua_idx].address = mmap->addr & 0xffffffff;
