@@ -2,6 +2,7 @@
 #include <stdint.h>
 #include <multiboot2.h>
 #include "multiboot.h"
+#include "vm.h"
 extern void printf (const char *format, ...);
 extern void cls (void);
 extern void cls2 (int y1, int y2);
@@ -24,6 +25,8 @@ extern void printAllocatedBlocks();
 extern void printSystemBlocks();
 extern unsigned int testAddress(unsigned int address);
 void analyze_multiboot_tag(void);
+extern int initVMManagement(void);
+extern int mapPage(unsigned long physical_address, unsigned long virtual_address);
 
 //meminit
 uint32_t memsize;
@@ -84,6 +87,14 @@ void kernel_entry ()
   printFreeBlocks();
   printAllocatedBlocks();
   printf("[OK]\n");
+
+  printf("pageing setup...");
+  int stat = initVMManagement();
+  if(stat){
+    printf("[OK]\n");
+  }else{
+    printf("[NG]\n");
+  }
   io_sti();
   while(1){
     if(timercount%100 == 0){

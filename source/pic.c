@@ -85,3 +85,9 @@ void ps2keyboard_handler(void)
   keydata = io_inByte(0x60);
   exit_interrupt();
 }
+void pageFault(void)
+{
+  enter_interrupt();
+  IRQinterrupt_done();
+  exit_interrupt();
+}
