@@ -83,14 +83,14 @@ void kernel_entry ()
   {
     initAllocatedMemoryRegion(m_modules[i].address, m_modules[i].size);
   }
+  //initFreedMemoryRegion(0x0, memsize);
   printSystemBlocks();
   printFreeBlocks();
   printAllocatedBlocks();
   printf("[OK]\n");
-
   printf("pageing setup...");
   int stat = initVMManagement();
-  if(stat){
+  if(stat==0){
     printf("[OK]\n");
   }else{
     printf("[NG]\n");

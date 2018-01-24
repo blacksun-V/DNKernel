@@ -37,6 +37,7 @@ _/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/
 extern void timer_interrupt(void);
 extern void ps2keyboard_handler(void);
 int int_handler_test();
+extern void pageFault(void);
 
 typedef struct{
   unsigned short offsetLow, selector;
@@ -78,6 +79,7 @@ void init_idt(void)
   setupInterruptGate(0x40, &int_handler_test);
   setupInterruptGate(0x20, &timer_interrupt);
   setupInterruptGate(0x21, &ps2keyboard_handler);
+  setupInterruptGate(14, &pageFault);
 }
 
 extern void printf (const char *format, ...);

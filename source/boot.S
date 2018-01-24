@@ -56,6 +56,9 @@ multiboot_entry:
   lea     HigherHalf, %ecx
   jmp     *%ecx
   HigherHalf:
+  // clear first
+  // movl $0, (PageDirectory)
+  invlpg (0)
   movl $(stack + STACK_SIZE), %esp
   pushl $0
   popf
@@ -84,7 +87,8 @@ PageDirectory:
   /* map first 4MB                                                            */
   /* bit7:PS=1 page size is 4MB                                               */
   /* bit1:RW=1 read/write access                                              */
-  /* bit0:P =1 page is presence                                               */
+  /* bit0:P =1 page is presence
+   0x00000083                                           */
   /* ------------------------------------------------------------------------ */
   .long   0x00000083                            /* first 4MB                  */
       .rept ( KERNEL_PAGE_NUM - 1 )
