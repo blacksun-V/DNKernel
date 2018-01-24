@@ -105,11 +105,11 @@ static inline unsigned long getPteIndex(unsigned long virtual_address)
 
 inline PAGE_TABLE_ENTRY* getPTE(PAGE_TABLE* table, unsigned long virtual_address)
 {
-  PAGE_TABLE_ENTRY* entry;/*
-  if(table == NULL)
+  PAGE_TABLE_ENTRY* entry;
+  if(table == -1)
   {
     return((PAGE_TABLE_ENTRY*)NULL);
-  }*/
+  }
   entry = (PAGE_TABLE_ENTRY*)table;
   return &entry[getPteIndex(virtual_address)];
 }
@@ -123,11 +123,11 @@ static inline unsigned long getPdeIndex(unsigned long virtual_address)
 
 inline PAGE_TABLE_ENTRY* getPDE(PAGE_DIRECTORY* directory, unsigned long virtual_address)
 {
-  PAGE_DIRECTORY_ENTRY* entry;/*
-  if(directory == NULL)
+  PAGE_DIRECTORY_ENTRY* entry;
+  if(directory == -1)
   {
-    return((PAGE_DIRECTORY_ENTRY*)NULL);
-  }*/
+    return((PAGE_DIRECTORY_ENTRY*)-1);
+  }
   entry = (PAGE_DIRECTORY_ENTRY*)directory;
   return &entry[getPdeIndex(virtual_address)];
 }
@@ -135,7 +135,7 @@ inline PAGE_TABLE_ENTRY* getPDE(PAGE_DIRECTORY* directory, unsigned long virtual
 inline void writeCPUCR3(unsigned long value)
 {
   __asm__ __volatile__("cli");
-  __asm__ __volatile__("xchgw %bx, %bx");
+  //__asm__ __volatile__("xchgw %bx, %bx");
   __asm__ __volatile__( "movl %0, %%cr3":: "r"(value));
 }
 
@@ -171,7 +171,7 @@ int mapPage(unsigned long physical_address, unsigned long virtual_address)
 
   //get pages
   page_direcory = getCurrentPageDirectory();
-  if(page_direcory == NULL)
+  if(page_direcory == -1)
   {
     return  DEF_MM_ERROR;
   }
@@ -180,7 +180,7 @@ int mapPage(unsigned long physical_address, unsigned long virtual_address)
   if(!isPdePresent(pde))
   {
     page_table = (PAGE_TABLE*)allocSingleMemoryBlock();
-    if(page_table == NULL)
+    if(page_table == -1)
     {
       return DEF_MM_ERROR;
     }
@@ -244,7 +244,7 @@ int initVMManagement(void)
     setPteFlags(pte, DEF_PTE_FLAGS_P | DEF_PTE_FLAGS_RW);
     setPtePageFrameAddress(pte, frame);
   }
-  printf("0xC0000000 to 0x%x\n", virtual_address);
+  printf("0xC0000000 to 0x%x\n", virtual_address-DEF_MM_PAGE_SIZE);
   directory = (PAGE_DIRECTORY*)allocSingleMemoryBlock();
   kmemset((void*)directory, 0x00, DEF_MM_PAGE_DIRECTORY_SIZE);
   if(directory == -1)

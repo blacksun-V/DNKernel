@@ -77,10 +77,12 @@ void kernel_entry ()
   initPhysicalMemoryManagement(memsize);
   //利用可能メモリを全部freeする！！ type1のやつ
   for(int i=0; i<ua_idx; i++){
+    printf("0x%x(0x%x) is freed\n", usable_areas[i].address,usable_areas[i].size);
     initFreedMemoryRegion(usable_areas[i].address, usable_areas[i].size);
   }
   for(int i=0; i<mm_idx; i++)
   {
+    printf("0x%x(0x%x) is allocated\n", m_modules[i].address,m_modules[i].size);
     initAllocatedMemoryRegion(m_modules[i].address, m_modules[i].size);
   }
   //initFreedMemoryRegion(0x0, memsize);

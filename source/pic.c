@@ -89,5 +89,6 @@ void pageFault(void)
 {
   enter_interrupt();
   IRQinterrupt_done();
+  printf("pagefault!");
   exit_interrupt();
 }

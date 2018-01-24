@@ -160,12 +160,12 @@ void* allocSingleMemoryBlock(void)
 
   if(pm_info.free_blocks<=0)
   {
-    return 0;
+    return -1;
   }
 
   status = findFirstFreeMemoryBlock(&block_number);
   if(status != 1)
-    return 0;
+    return -1;
 
   setBit(block_number);
   physical_address = (void*)(block_number*DEF_MEMORY_BLOCK_SIZE);
