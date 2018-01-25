@@ -30,5 +30,7 @@ kernel: $(OBJS) Makefile
 	$(CC) $*.S -o $*.o $(ASMFLAGS)
 
 clean :
-	$(RM) *.o
-	$(RM) *.bin
+	$(RM) $(SOURCE)/*.o
+	$(RM) $(SOURCE)/*.bin
+	$(RM) ./myos.elf
+	$(RM) ./os.iso

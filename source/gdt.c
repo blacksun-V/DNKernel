@@ -37,7 +37,8 @@ _/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/
 #define	NULL_DESCRIPTOR 0
 #define	CODE_DESCRIPTOR 1
 #define	DATA_DESCRIPTOR 2
-#define	TEMP_DESCRIPTOR 3
+#define	CODE_U_DESCRIPTOR 3
+#define	DATA_U_DESCRIPTOR 4
 #define	TASK_CODE_DESCRIPTOR		3
 #define	TASK_DATA_DESCRIPTOR		4
 #define	KTSS_DESCRIPTOR			5
@@ -67,7 +68,20 @@ _/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/
 #define	DEF_GDT_DATA_FLAGS_BH		0xCF
 #define	DEF_GDT_DATA_BASEHI		0x00
 
-#define GDTMAX 3
+/* Usermode Code Descriptor*/
+#define	DEF_GDT_U_CODE_LIMIT		0xFFFF
+#define	DEF_GDT_U_CODE_BASELO		0x0000
+#define	DEF_GDT_U_CODE_BASEMID		0x00
+#define	DEF_GDT_U_CODE_FLAGS		0xCFFA
+#define	DEF_GDT_U_CODE_BASEHI		0x00
+/* Usermode Data Descriptor*/
+#define	DEF_GDT_U_DATA_LIMIT		0xFFFF
+#define	DEF_GDT_U_DATA_BASELO		0x0000
+#define	DEF_GDT_U_DATA_BASEMID		0x00
+#define	DEF_GDT_U_DATA_FLAGS		0xCFF2
+#define	DEF_GDT_U_DATA_BASEHI		0x00
+
+#define GDTMAX 5
 
 inline void load_gdt(void)
 {
@@ -113,12 +127,26 @@ void init_gdt(void)
   gdt[CODE_DESCRIPTOR].accessRight = DEF_GDT_CODE_FLAGS;
   gdt[CODE_DESCRIPTOR].baseHigh = DEF_GDT_CODE_BASEHI;
 
-  //セグメントディスクリプタ
+  //データディスクリプタ
   gdt[DATA_DESCRIPTOR].limitLow = DEF_GDT_DATA_LIMIT;
   gdt[DATA_DESCRIPTOR].baseLow = DEF_GDT_DATA_BASELO;
   gdt[DATA_DESCRIPTOR].baseMid = DEF_GDT_DATA_BASEMID;
   gdt[DATA_DESCRIPTOR].accessRight = DEF_GDT_DATA_FLAGS;
   gdt[DATA_DESCRIPTOR].baseHigh = DEF_GDT_DATA_BASEHI;
+
+    //コードディスクリプタ
+  gdt[CODE_U_DESCRIPTOR].limitLow = DEF_GDT_U_CODE_LIMIT;
+  gdt[CODE_U_DESCRIPTOR].baseLow = DEF_GDT_U_CODE_BASELO;
+  gdt[CODE_U_DESCRIPTOR].baseMid = DEF_GDT_U_CODE_BASEMID;
+  gdt[CODE_U_DESCRIPTOR].accessRight = DEF_GDT_U_CODE_FLAGS;
+  gdt[CODE_U_DESCRIPTOR].baseHigh = DEF_GDT_U_CODE_BASEHI;
+
+  //データディスクリプタ
+  gdt[DATA_U_DESCRIPTOR].limitLow = DEF_GDT_U_DATA_LIMIT;
+  gdt[DATA_U_DESCRIPTOR].baseLow = DEF_GDT_U_DATA_BASELO;
+  gdt[DATA_U_DESCRIPTOR].baseMid = DEF_GDT_U_DATA_BASEMID;
+  gdt[DATA_U_DESCRIPTOR].accessRight = DEF_GDT_U_DATA_FLAGS;
+  gdt[DATA_U_DESCRIPTOR].baseHigh = DEF_GDT_U_DATA_BASEHI;
 
   gdtr.size = GDTMAX * sizeof(SEGMENT_DESCRIPTOR);
   gdtr.base = (SEGMENT_DESCRIPTOR*)gdt;

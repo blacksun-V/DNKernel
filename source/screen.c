@@ -1,5 +1,6 @@
 #include <stddef.h>
 #include <stdint.h>
+extern void io_outByte(unsigned short address, unsigned char value);
 /*  Macros. */
 /*  Some screen stuff. */
 /*  The number of columns. */
@@ -28,6 +29,9 @@ cls (void)
     *(video + i) = 0;
   xpos = 0;
   ypos = 0;
+  //disable cursor
+  io_outByte(0x3D4, 0x0A);
+  io_outByte(0x3D5, 0x20);
 }
 
 void
