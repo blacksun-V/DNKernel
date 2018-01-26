@@ -6,7 +6,6 @@
 #include "phy_mem.h"
 #define	DEF_MEMORY_KERNEL_START	0x00100000
 #define DEF_MEMORY_BLOCK_SIZE 4096
-extern void printf (const char *format, ...);
 
 inline unsigned int getSizeOfKernel(void)
 {

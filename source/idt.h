@@ -21,7 +21,6 @@
 
 void init_idt(void);
 
-
 typedef struct{
   unsigned short offsetLow, selector;
   unsigned char reserved, accsessRight;

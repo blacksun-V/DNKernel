@@ -1,11 +1,5 @@
-
 #include "isr.h"
 #include "idt.h"
-
-extern void timer_interrupt(void);
-extern void ps2keyboard_handler(void);
-int int_handler_test();
-extern void pageFault(void);
 
 GATE_DESCRIPTOR idt[GATE_MAX];
 IDTR idtr;
