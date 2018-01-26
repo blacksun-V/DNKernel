@@ -1,4 +1,17 @@
-# ObenkyoKernel
-multiboot2に対応させた学習用barebones  
-Makefileも何もかも適当に手探りで学習するためのレポジトリ．  
-プルリクで教えてくれるの大歓迎！
+# DNKernel
+Dirty Noob Kernel for Multiboot2.  
+  
+実装した  
+* GDT/IDT初期化
+* 割り込み(IRQ/ISR)
+* タイマー
+* 画面出力(VGA Text)
+* 物理メモリ管理
+* ページング
+
+これからやる
+* kmalloc
+* VFS
+* マルチタスク
+* システムコール
+* framebuffer出力
