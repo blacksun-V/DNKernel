@@ -1,4 +1,5 @@
 #include "vm.h"
+#include "common.h"
 extern unsigned int allocSingleMemoryBlock(void);
 extern void freeSingleMemoryBlock(void *physical_address);
 extern void kmemset(void *str, unsigned char c, int size);
@@ -73,11 +74,11 @@ inline int isPdeWritable(PAGE_DIRECTORY_ENTRY* entry)
 PAGE_TABLE_ENTRY* allocPage(PAGE_TABLE_ENTRY* entry)
 {
   void *physical_address;
-  physical_address = allocSingleMemoryBlock();/*
-  if(physical_address == NULL)
+  physical_address = allocSingleMemoryBlock();
+  if(physical_address == -1)
   {
     return ((PAGE_TABLE_ENTRY*)physical_address);
-  }*/
+  }
   setPtePageFrameAddress(entry, (unsigned long)physical_address);
   setPteFlags(entry, DEF_PTE_FLAGS_P);
 
@@ -87,11 +88,11 @@ PAGE_TABLE_ENTRY* allocPage(PAGE_TABLE_ENTRY* entry)
 void freePage(PAGE_TABLE_ENTRY* entry)
 {
   void* physical_address;
-  physical_address =(void*)getPtePageFrameAddress(entry);/*
-  if(physical_address == NULL)
+  physical_address =(void*)getPtePageFrameAddress(entry);
+  if(physical_address == -1)
   {
     return;
-  }*/
+  }
   freeSingleMemoryBlock(physical_address);
   clearPteFlags(entry, DEF_PTE_FLAGS_P);
 }
@@ -236,7 +237,7 @@ int initVMManagement(void)
   kmemset((void*)table_low, 0x00, DEF_MM_PAGE_TABLE_SIZE);
   kmemset((void*)table_high, 0x00, DEF_MM_PAGE_TABLE_SIZE);
   //set up pages 0x00000000 - 0x003FF000
-  for(i=0,frame = 0x00000000,virtual_address = 0xC0000000;
+  for(i=0,frame = 0x00000000,virtual_address = 0x00000000;
       i<DEF_MM_NUM_PTE;
       i++,frame+=DEF_MM_PAGE_SIZE,virtual_address+=DEF_MM_PAGE_SIZE)
   {
@@ -244,17 +245,30 @@ int initVMManagement(void)
     setPteFlags(pte, DEF_PTE_FLAGS_P | DEF_PTE_FLAGS_RW);
     setPtePageFrameAddress(pte, frame);
   }
-  printf("0xC0000000 to 0x%x\n", virtual_address-DEF_MM_PAGE_SIZE);
+  //set up pages 0xC0000000 - 0xC03FF000
+  for(i=0,frame = 0x00000000,virtual_address = 0xC0000000;
+      i<DEF_MM_NUM_PTE;
+      i++,frame+=DEF_MM_PAGE_SIZE,virtual_address+=DEF_MM_PAGE_SIZE)
+  {
+    pte = getPTE(table_high, virtual_address);
+    setPteFlags(pte, DEF_PTE_FLAGS_P | DEF_PTE_FLAGS_RW);
+    setPtePageFrameAddress(pte, frame);
+  }
+
   directory = (PAGE_DIRECTORY*)allocSingleMemoryBlock();
   kmemset((void*)directory, 0x00, DEF_MM_PAGE_DIRECTORY_SIZE);
   if(directory == -1)
   {
     return DEF_MM_ERROR;
   }
-  //set up pdes 0x00000000 - 0x003FF000
-  pde = getPDE(directory, 0xC0000000);
+
+  pde = getPDE(directory, 0x00000000);
   setPdeFlags(pde, DEF_PDE_FLAGS_P | DEF_PDE_FLAGS_RW);
   setPdePageFrameAddress(pde, (unsigned long)table_low);
+  pde = getPDE(directory, 0xC0000000);
+  setPdeFlags(pde, DEF_PDE_FLAGS_P | DEF_PDE_FLAGS_RW);
+  setPdePageFrameAddress(pde, (unsigned long)table_high);
+
   switchNewPDE(directory);
   printf("paging on\n");
   pagingOn();

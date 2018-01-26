@@ -2,6 +2,7 @@
 //ページングの仮想アドレスに割り当てる4kb=1pageをとったりするやつ
 
 #include <stdint.h>
+#include "common.h"
 #define	DEF_MEMORY_KERNEL_START	0x00100000
 #define DEF_MEMORY_BLOCK_SIZE 4096
 extern void printf (const char *format, ...);
@@ -103,13 +104,6 @@ unsigned int findFirstFreeMemoryBlock(unsigned int *block_number)
   }
 
   return -1;
-}
-void kmemset( void *str, unsigned char c, int size )
-{
-	unsigned char *ptr	= ( unsigned char * )str;
-	const unsigned char ch	= ( const unsigned char )c;
-	while( size-- )
-		*ptr++ = ch;
 }
 
 void initFreedMemoryRegion(unsigned int base_address, unsigned int size)

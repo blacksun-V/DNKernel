@@ -54,8 +54,6 @@ _/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/
 #define	DEF_GDT_CODE_LIMIT		0xFFFF
 #define	DEF_GDT_CODE_BASELO		0x0000
 #define	DEF_GDT_CODE_BASEMID		0x00
-#define	DEF_GDT_CODE_FLAGS_BL		0x9A
-#define	DEF_GDT_CODE_FLAGS_BH		0xCF
 #define	DEF_GDT_CODE_FLAGS		0xCF9A
 #define	DEF_GDT_CODE_BASEHI		0x00
 
@@ -64,8 +62,6 @@ _/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/
 #define	DEF_GDT_DATA_BASELO		0x0000
 #define	DEF_GDT_DATA_BASEMID		0x00
 #define	DEF_GDT_DATA_FLAGS		0xCF92
-#define	DEF_GDT_DATA_FLAGS_BL		0x92
-#define	DEF_GDT_DATA_FLAGS_BH		0xCF
 #define	DEF_GDT_DATA_BASEHI		0x00
 
 /* Usermode Code Descriptor*/

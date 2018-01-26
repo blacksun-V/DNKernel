@@ -3,7 +3,8 @@
 #include <multiboot2.h>
 #include "multiboot.h"
 #include "vm.h"
-extern void printf (const char *format, ...);
+#include "common.h"
+#include "isr.h"
 extern void cls (void);
 extern void cls2 (int y1, int y2);
 extern void io_hlt(void);
@@ -27,7 +28,7 @@ extern unsigned int testAddress(unsigned int address);
 void analyze_multiboot_tag(void);
 extern int initVMManagement(void);
 extern int mapPage(unsigned long physical_address, unsigned long virtual_address);
-
+void test_handler(void);
 //meminit
 uint32_t memsize;
 typedef struct{
@@ -48,7 +49,7 @@ void kernel_entry ()
 {
   uint32_t eip;
   __asm__ __volatile__("movl $kernel_entry, %0": "=b"(eip));
-  cls ();
+  cls();
   printf("\n\nNOW I'M AT 0x%x\n", eip);
   io_cli();
   printf("Hello! baby barebone for multiboot2\n");
@@ -62,7 +63,8 @@ void kernel_entry ()
   init_gdt();
 
   printf("[OK]\n");
-  __asm__ __volatile__("int $0x40");
+  register_int_handler(3, &test_handler);
+  __asm__ __volatile__("int $0x3");
 
   printf("init pic...");
   init_pic();
@@ -98,6 +100,7 @@ void kernel_entry ()
     printf("[NG]\n");
   }
   io_sti();
+  __asm__ __volatile__("int $0x4");
   while(1){
     if(timercount%100 == 0){
       cls2(0, 1);
@@ -239,4 +242,9 @@ void analyze_multiboot_tag(void)
       }
   tag = (struct multiboot_tag *) ((multiboot_uint8_t *) tag
                                   + ((tag->size + 7) & ~7));
+}
+
+void test_handler(void)
+{
+  printf("[*]INT0x3 This is test handler!!");
 }

@@ -122,7 +122,7 @@ printf (const char *format, ...)
 {
   char **arg = (char **) &format;
   int c;
-  char buf[20];
+  char buf[40];
 
   arg++;
 
