@@ -5,31 +5,22 @@
 #include "vm.h"
 #include "common.h"
 #include "isr.h"
-extern void cls (void);
-extern void cls2 (int y1, int y2);
-extern void io_hlt(void);
-extern void io_sti(void);
-extern void io_cli(void);
-extern void init_idt(void);
-extern void init_gdt(void);
-extern void init_pic(void);
-extern void init_pit(void);
+#include "gdt.h"
+#include "idt.h"
+#include "pic.h"
+#include "phy_mem.h"
+#include "vm.h"
+#include "screen.h"
+
+//pic
 extern int timercount;
 extern unsigned char keydata;
-extern void initPhysicalMemoryManagement(unsigned int memory_size);
-extern void initFreedMemoryRegion(unsigned int base_address, unsigned int size);
-extern void initAllocatedMemoryRegion(unsigned int base_address, unsigned int size);
-extern unsigned int allocSingleMemoryBlock(void);
-extern void freeSingleMemoryBlock(void *physical_address);
-extern void printFreeBlocks();
-extern void printAllocatedBlocks();
-extern void printSystemBlocks();
-extern unsigned int testAddress(unsigned int address);
+
 void analyze_multiboot_tag(void);
-extern int initVMManagement(void);
-extern int mapPage(unsigned long physical_address, unsigned long virtual_address);
 void test_handler(void);
+
 //meminit
+uint32_t mm_idx = 0;
 uint32_t memsize;
 typedef struct{
   char* name;
@@ -37,13 +28,13 @@ typedef struct{
   uint32_t size;
 } MULTIBOOT_MODULE;
 MULTIBOOT_MODULE m_modules[10];
-uint32_t mm_idx = 0;
+
+uint32_t ua_idx = 0;
 typedef struct{
   uint32_t address;
   uint32_t size;
 } USABLE_MEMORY;
 USABLE_MEMORY usable_areas[10];
-uint32_t ua_idx = 0;
 
 void kernel_entry ()
 {
@@ -87,7 +78,6 @@ void kernel_entry ()
     printf("0x%x(0x%x) is allocated\n", m_modules[i].address,m_modules[i].size);
     initAllocatedMemoryRegion(m_modules[i].address, m_modules[i].size);
   }
-  //initFreedMemoryRegion(0x0, memsize);
   printSystemBlocks();
   printFreeBlocks();
   printAllocatedBlocks();

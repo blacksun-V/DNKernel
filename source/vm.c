@@ -1,10 +1,7 @@
 #include "vm.h"
 #include "common.h"
-extern unsigned int allocSingleMemoryBlock(void);
-extern void freeSingleMemoryBlock(void *physical_address);
-extern void kmemset(void *str, unsigned char c, int size);
-extern void io_cli(void);
-extern void printf (const char *format, ...);
+#include "phy_mem.h"
+
 //PTE
 inline void setPteFlags(PAGE_TABLE_ENTRY* entry, unsigned long flags)
 {

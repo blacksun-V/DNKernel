@@ -121,4 +121,8 @@ typedef PAGE_DIRECTORY_ENTRY PAGE_DIRECTORY;
 #define	DEF_MM_OK 0
 #define	DEF_MM_ERROR (-1)
 
+PAGE_TABLE_ENTRY* allocPage(PAGE_TABLE_ENTRY* entry);
+void freePage(PAGE_TABLE_ENTRY* entry);
+int initVMManagement(void);
+
 #endif	/* __MEMORY__H */

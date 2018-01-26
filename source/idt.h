@@ -1,24 +1,4 @@
 #include "common.h"
-
-/*
-_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/
-
-	Description : Definition for IDT Gate Descriptor Flags
-
-	flags
-	bit number	description
-	0...4		interruptgate		: 01110b = 32bit descriptor
-						: 00110b = 16bit descriptor
-			task gate 		: must be 00101b
-			trap gate		: 01111b = 32bit descriptor
-	5...6		descriptor privedlge	: ring0 = 00b
-			level			: ring1 = 01b
-						: ring2 = 10b
-						: ring3 = 11b
-	7		present bit		: Segment is present
-
-_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/
-*/
 #define	DEF_IDT_FLAGS_INTGATE_16BIT		0x06
 #define	DEF_IDT_FLAGS_TSKGATE			0x05
 #define	DEF_IDT_FLAGS_CALL_GATE			0x0C
