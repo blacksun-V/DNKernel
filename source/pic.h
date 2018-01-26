@@ -1,3 +1,6 @@
+#ifndef PIC_H
+#define PIC_H
+
 #define PIC_MASTER_ICW1		0x0020
 #define PIC_MASTER_OCW2		0x0020
 #define PIC_MASTER_IMR		0x0021
@@ -13,3 +16,8 @@
 
 void init_pic(void);
 void init_pit(void);
+
+extern int timercount;
+extern unsigned char keydata;
+
+#endif

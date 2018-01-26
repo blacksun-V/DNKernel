@@ -1,3 +1,5 @@
+#ifndef ISR_H
+#define ISR_H
 #include "common.h"
 
 #define IRQ0 32
@@ -26,3 +28,5 @@ typedef struct
 } regs_t;
 typedef void (*isr_t)(regs_t);
 void register_int_handler(uint8_t n, void* handler);
+
+#endif

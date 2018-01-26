@@ -12,10 +12,6 @@
 #include "vm.h"
 #include "screen.h"
 
-//pic
-extern int timercount;
-extern unsigned char keydata;
-
 void analyze_multiboot_tag(void);
 void test_handler(void);
 
@@ -36,7 +32,25 @@ typedef struct{
 } USABLE_MEMORY;
 USABLE_MEMORY usable_areas[10];
 
+void init();
 void kernel_entry ()
+{
+  init();
+  while(1){
+    if(timercount%100 == 0){
+      cls2(0, 1);
+      printf("TIMER: %d\n", timercount/100);
+    }
+    if(keydata!=0x00){
+      cls2(1, 2);
+      printf("KEY: %x\n", keydata);
+      keydata = 0x00;
+    }
+    io_hlt();
+  }
+}
+
+void init()
 {
   uint32_t eip;
   __asm__ __volatile__("movl $kernel_entry, %0": "=b"(eip));
@@ -91,18 +105,6 @@ void kernel_entry ()
   }
   io_sti();
   __asm__ __volatile__("int $0x4");
-  while(1){
-    if(timercount%100 == 0){
-      cls2(0, 1);
-      printf("TIMER: %d\n", timercount/100);
-    }
-    if(keydata!=0x00){
-      cls2(1, 2);
-      printf("KEY: %x\n", keydata);
-      keydata = 0x00;
-    }
-    io_hlt();
-  }
 }
 
 void analyze_multiboot_tag(void)

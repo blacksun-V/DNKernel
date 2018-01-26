@@ -1,3 +1,6 @@
+#ifndef GDT_H
+#define GDT_H
+
 #define	NULL_DESCRIPTOR 0
 #define	CODE_DESCRIPTOR 1
 #define	DATA_DESCRIPTOR 2
@@ -56,3 +59,5 @@ typedef struct{
 } __attribute__((packed))GDTR;
 
 void init_gdt(void);
+
+#endif

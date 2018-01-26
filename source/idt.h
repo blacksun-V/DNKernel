@@ -1,3 +1,6 @@
+#ifndef IDT_H
+#define IDT_H
+
 #include "common.h"
 #define	DEF_IDT_FLAGS_INTGATE_16BIT		0x06
 #define	DEF_IDT_FLAGS_TSKGATE			0x05
@@ -78,3 +81,5 @@ extern void irq12();
 extern void irq13();
 extern void irq14();
 extern void irq15();
+
+#endif

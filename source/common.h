@@ -1,5 +1,6 @@
 #ifndef COMMON_H
 #define COMMON_H
+
 #include <stddef.h>
 #include <stdint.h>
 extern void printf (const char *format, ...);
@@ -10,4 +11,5 @@ void kmemset(void *str, unsigned char c, int size);
 extern void io_hlt(void);
 extern void io_sti(void);
 extern void io_cli(void);
+
 #endif
