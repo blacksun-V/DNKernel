@@ -15,7 +15,7 @@ void isr_handler(regs_t regs)
     isr_t handler = int_handlers[regs.int_no];
     handler(regs);
   }else{
-    printf("[*]unhandled int\n");
+    printf("[*]unhandled int:%d\n", regs.int_no);
     //TODO:
     //printfの実装の問題の可能性
     //nopやmagic breakpointを打たないとスタックが不正な値になっている
