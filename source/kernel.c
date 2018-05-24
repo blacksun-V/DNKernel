@@ -33,7 +33,7 @@ typedef struct{
 USABLE_MEMORY usable_areas[10];
 
 void init();
-void kernel_entry ()
+void kernel_entry()
 {
   init();
   while(1){

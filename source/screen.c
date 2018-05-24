@@ -20,8 +20,7 @@ static int ypos;
 /*  Point to the video memory. */
 static volatile unsigned char *video;
 /*  Clear the screen and initialize VIDEO, XPOS and YPOS. */
-void
-cls (void)
+void cls (void)
 {
   int i;
   video = (unsigned char *) VIDEO;
@@ -34,8 +33,7 @@ cls (void)
   io_outByte(0x3D5, 0x20);
 }
 
-void
-cls2 (int y1, int y2)
+void cls2 (int y1, int y2)
 {
   int i;
   video = (unsigned char *) VIDEO;
@@ -47,8 +45,7 @@ cls2 (int y1, int y2)
 /*  Convert the integer D to a string and save the string in BUF. If
   BASE is equal to 'd', interpret that D is decimal, and if BASE is
   equal to 'x', interpret that D is hexadecimal. */
-static void
-itoa (char *buf, int base, int d)
+static void itoa (char *buf, int base, int d)
 {
   char *p = buf;
   char *p1, *p2;
@@ -91,8 +88,7 @@ itoa (char *buf, int base, int d)
 }
 
 /*  Put the character C on the screen. */
-static void
-putchar (int c)
+static void putchar (int c)
 {
   if (c == '\n' || c == '\r')
     {
@@ -117,8 +113,7 @@ putchar (int c)
 }
 /*  Format a string and print it on the screen, just like the libc
   function printf. */
-void
-printf (const char *format, ...)
+void printf (const char *format, ...)
 {
   char **arg = (char **) &format;
   int c;

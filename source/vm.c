@@ -27,12 +27,12 @@ inline unsigned long getPtePageFrameAddress(PAGE_TABLE_ENTRY* entry)
 
 inline int isPtePresent(PAGE_TABLE_ENTRY* entry)
 {
-	return ((*entry & DEF_PTE_FLAGS_P) == DEF_PTE_FLAGS_P);
+  return ((*entry & DEF_PTE_FLAGS_P) == DEF_PTE_FLAGS_P);
 }
 
 inline int isPteWritable(PAGE_TABLE_ENTRY* entry)
 {
-	return ((*entry & DEF_PTE_FLAGS_RW) == DEF_PTE_FLAGS_RW);
+  return ((*entry & DEF_PTE_FLAGS_RW) == DEF_PTE_FLAGS_RW);
 }
 
 
@@ -55,17 +55,17 @@ inline void setPdePageFrameAddress(PAGE_DIRECTORY_ENTRY* entry, unsigned long pa
 
 inline unsigned long getPdePageTableAddress(PAGE_DIRECTORY_ENTRY* entry)
 {
-    return (*entry & DEF_PDE_PAGE_TABLE_ADDRESS);
+  return (*entry & DEF_PDE_PAGE_TABLE_ADDRESS);
 }
 
 inline int isPdePresent(PAGE_DIRECTORY_ENTRY* entry)
 {
-    return ((*entry & DEF_PDE_FLAGS_P) == DEF_PDE_FLAGS_P);
+  return ((*entry & DEF_PDE_FLAGS_P) == DEF_PDE_FLAGS_P);
 }
 
 inline int isPdeWritable(PAGE_DIRECTORY_ENTRY* entry)
 {
-    return ((*entry & DEF_PDE_FLAGS_P) == DEF_PDE_FLAGS_RW);
+  return ((*entry & DEF_PDE_FLAGS_P) == DEF_PDE_FLAGS_RW);
 }
 
 PAGE_TABLE_ENTRY* allocPage(PAGE_TABLE_ENTRY* entry)

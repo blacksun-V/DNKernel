@@ -14,8 +14,8 @@ unsigned char io_inByte(unsigned short address)
 
 void kmemset(void *str, unsigned char c, int size)
 {
-	unsigned char *ptr	= (unsigned char *)str;
-	const unsigned char ch	= (const unsigned char)c;
-	while(size--)
-		*ptr++ = ch;
+  unsigned char *ptr = (unsigned char *)str;
+  const unsigned char ch = (const unsigned char)c;
+  while(size--)
+    *ptr++ = ch;
 }

@@ -81,26 +81,26 @@ unsigned int findFirstFreeMemoryBlock(unsigned int *block_number)
   /* ------------------------------------------------------------------------ */
   for(bitmap_index=0; bitmap_index<pm_info.memory_map_size; bitmap_index++)
   {
-      /* -------------------------------------------------------------------- */
-      /*  if the element has candidate spaces                                 */
-      /* -------------------------------------------------------------------- */
-      if(pm_info.memory_map[ bitmap_index ] != 0xFFFFFFFF)
+    /* -------------------------------------------------------------------- */
+    /*  if the element has candidate spaces                                 */
+    /* -------------------------------------------------------------------- */
+    if(pm_info.memory_map[ bitmap_index ] != 0xFFFFFFFF)
+    {
+      /* ---------------------------------------------------------------- */
+      /*  iterate each bit of the element                                 */
+      /* ---------------------------------------------------------------- */
+      for(bit_count=0; bit_count<32; bit_count++)
       {
-          /* ---------------------------------------------------------------- */
-          /*  iterate each bit of the element                                 */
-          /* ---------------------------------------------------------------- */
-          for(bit_count=0; bit_count<32; bit_count++)
-          {
-              if(testBit(bitmap_index*32+bit_count) == 0)
-              {
-                  /* -------------------------------------------------------- */
-                  /*  return bitmap index number                              */
-                  /* -------------------------------------------------------- */
-                  *block_number = bitmap_index * sizeof(unsigned int) * 8 + bit_count;
-                  return 1;
-              }
-          }
+        if(testBit(bitmap_index*32+bit_count) == 0)
+        {
+            /* -------------------------------------------------------- */
+            /*  return bitmap index number                              */
+            /* -------------------------------------------------------- */
+            *block_number = bitmap_index * sizeof(unsigned int) * 8 + bit_count;
+            return 1;
+        }
       }
+    }
   }
 
   return -1;
